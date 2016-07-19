@@ -22,20 +22,21 @@ using System.Web;
 using Bookstore.Setup;
 using Bookstore.Pages;
 
+
 namespace BookstoreTestScript
 {
     [TestClass]
-    public class LoginTest : Browser
+    public class DeleteMemberTest : Browser
     {
         private string _url = ConfigurationManager.AppSettings["baseUrl"];
         private IWebDriver _driver;
-        
+        private static string _DriveLocation;
+        const int login = 1;
         int row1 = 2;
-        const int useridCol = 1;
-        const int passwordCol = 2;
+
         [TestMethod]
         [TestCaseSource(typeof(Browser), "BrowserToRunWith")]
-        public void Logintobookstorehome(string browsername)
+        public void Deletemembers(string browsername)
         {
             try
             {
@@ -43,16 +44,16 @@ namespace BookstoreTestScript
                 _driver.Navigate().GoToUrl(_url);
                 _driver.Manage().Window.Maximize();
                 _driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(60));
-                var login = new Login(_driver);
-                var workSheet = login.Readfromexcelsheet();
-                login.logintobookstore(_driver, workSheet, row1, useridCol, passwordCol);
-                _driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(100));
-                //Assert that user is  logged in successfully and user information title is displayed upon logging
-                Assert.IsTrue(login.IsUserInformationTitleDisplayed());
+                var admin = new Administration(_driver);
+                var workSheet = admin.Readfromexcelsheet();
+                var start = workSheet.Dimension.Start;
+                var end = workSheet.Dimension.End;
+                // for (int row1 = 2; row1 <= end.Row; row1++)
+                // {
+                admin.deletemember(_driver, workSheet, row1, login);
+                // }
+                _driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(30));
                 _driver.Close();
-
-
-
             }
             catch (Exception ex)
             {
@@ -61,12 +62,11 @@ namespace BookstoreTestScript
                 }
                 throw;
             }
-
         }
-        public LoginTest()
+        public DeleteMemberTest()
         {
 
         }
     }
-
 }
+

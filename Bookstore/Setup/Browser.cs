@@ -35,7 +35,17 @@ namespace Bookstore.Setup
 
         {
             IWebDriver driver = null;
-            driver = new ChromeDriver();
+            switch (browsername)
+            {
+                case ("firefox"):
+                    driver = new FirefoxDriver();
+                    break;
+                case ("chrome"):
+                    driver = new ChromeDriver();
+                    break;
+
+            }
+
             if (driver != null)
             {
                 driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(DriverTimeOut));

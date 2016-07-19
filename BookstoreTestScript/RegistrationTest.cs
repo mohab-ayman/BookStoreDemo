@@ -25,17 +25,24 @@ using Bookstore.Pages;
 namespace BookstoreTestScript
 {
     [TestClass]
-    public class LoginTest : Browser
+    public class RegistrationTest : Browser
     {
         private string _url = ConfigurationManager.AppSettings["baseUrl"];
         private IWebDriver _driver;
-        
-        int row1 = 2;
-        const int useridCol = 1;
-        const int passwordCol = 2;
+        private static string _DriveLocation;
+        const int login = 1;
+        const int mpassword=2;
+        const int confirmpass =3;
+        const int firstname =4;
+        const int lastname =5;
+        const int email =6;
+        const int address =7;
+        const int phone =8;
+        const int creditCardtype =9;
+        const int creditcardnumber =10;
         [TestMethod]
         [TestCaseSource(typeof(Browser), "BrowserToRunWith")]
-        public void Logintobookstorehome(string browsername)
+        public void Registermembers(string browsername)
         {
             try
             {
@@ -43,16 +50,20 @@ namespace BookstoreTestScript
                 _driver.Navigate().GoToUrl(_url);
                 _driver.Manage().Window.Maximize();
                 _driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(60));
-                var login = new Login(_driver);
-                var workSheet = login.Readfromexcelsheet();
-                login.logintobookstore(_driver, workSheet, row1, useridCol, passwordCol);
-                _driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(100));
-                //Assert that user is  logged in successfully and user information title is displayed upon logging
-                Assert.IsTrue(login.IsUserInformationTitleDisplayed());
+                var reg = new Registration(_driver);
+                var workSheet = reg.Readfromexcelsheet();
+                var start = workSheet.Dimension.Start;
+                var end = workSheet.Dimension.End;
+                for (int row1 = 2; row1 <= end.Row; row1++)
+                {
+
+                    reg.registernewmember(_driver, workSheet, row1, login, mpassword, confirmpass, firstname, lastname, email, address, phone, creditCardtype, creditcardnumber);
+                }
+                
+                _driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(30));
+                //var exptitle = _driver.Title;
+                //Assert.IsTrue(login.IsApplicationsTitleDisplayed());
                 _driver.Close();
-
-
-
             }
             catch (Exception ex)
             {
@@ -63,10 +74,10 @@ namespace BookstoreTestScript
             }
 
         }
-        public LoginTest()
+        public RegistrationTest()
         {
 
         }
     }
-
+      
 }
